@@ -1,6 +1,42 @@
-# hugo-lunr-ml - package for multilingual or not hugo site
+<h1 align="center">hugo-lunr-ml</h1>
+<p align="center">Package for multilingual or not hugo site</p>
 
 Generates `search-index.json` file in the `public` folder. Ready to use by lunr.js
+
+## Installation
+
+Install the hugo-lunr-ml utility via [npm](https://www.npmjs.com/package/hugo-lunr-ml):
+
+```
+$ npm install hugo-lunr-ml
+```
+
+## Usage
+
+The easiest way to use hugo-lunr is via npm scripts:
+
+```
+  "scripts": {
+    "create-index": "hugo-lunr-ml",
+    "create-index-io": "hugo-lunr-ml -i "content/**" -o public/my-index.json"
+  },
+```
+
+### Options
+
+By default module will read the `content` directory of you and output the lunr index to `search-index.json`. 
+
+```
+-i  set input path to parse (default: content/**)
+-o  set output index file path (default: /public/search-index.json')
+-l  set default language. will use this code ([.en, .ru etc] in the search json) (default: ru)
+```
+
+### Execute
+
+```
+$ npm run create-index
+```
 
 **Example of result `.json` file:**
 ```json
@@ -31,42 +67,6 @@ Generates `search-index.json` file in the `public` folder. Ready to use by lunr.
         }
     ]
 }
-```
-
-## Installation
-
-Install the hugo-lunr-ml utility via [npm](https://www.npmjs.com/package/hugo-lunr-ml):
-
-```
-$ npm install hugo-lunr-ml
-```
-
-## Usage
-
-The easiest way to use hugo-lunr is via npm scripts:
-
-```
-  "scripts": {
-    "create-index": "hugo-lunr-ml",
-    "create-index-io": "hugo-lunr-ml -i "content/**" -o public/my-index.json"
-  },
-```
-
-
-### Options
-
-By default module will read the `content` directory of you and output the lunr index to `search-index.json`. 
-
-```
--i  set input path to parse (default: content/**)
--o  set output index file path (default: /public/search-index.json')
--l  set default language. will use this code ([.en, .ru etc] in the search json) (default: ru)
-```
-
-### Execute
-
-```
-$ npm run create-index
 ```
 
 ## How to connect with lunr.js
