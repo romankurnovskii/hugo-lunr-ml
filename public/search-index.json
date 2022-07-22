@@ -1,0 +1,20 @@
+{
+    "ru": [
+        {
+            "uri": "/posts/post-sub01",
+            "title": "Test post 01 Ru",
+            "content": "\nTest post",
+            "tags": [],
+            "lang": "ru"
+        }
+    ],
+    "en": [
+        {
+            "uri": "/posts/post-sub01",
+            "title": "Test post 01 Eng",
+            "content": "\nTest post",
+            "tags": [],
+            "lang": "en"
+        }
+    ]
+}
