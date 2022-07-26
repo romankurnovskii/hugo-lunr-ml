@@ -7,6 +7,9 @@ import matter from 'gray-matter';
 import removeMd from 'remove-markdown';
 import { stripHtml } from "string-strip-html";
 
+import { createFolders, getSystemLang } from './utils.js';
+
+
 const DEFAULT_LANGUAGE = 'ru'
 const CONTENT_PATH = 'content/**'
 const OUTPUT_INDEX_FILE = 'public/search-index.json'
@@ -14,7 +17,7 @@ const OUTPUT_INDEX_FILE = 'public/search-index.json'
 class HugoIndexer {
 
     constructor() {
-        this.defaultLanguage = DEFAULT_LANGUAGE
+        this.defaultLanguage = getSystemLang()
         this.input = CONTENT_PATH
         this.output = OUTPUT_INDEX_FILE;
         this.baseDir = path.dirname(this.input);
@@ -130,7 +133,7 @@ class HugoIndexer {
     _setDefaultLanguage(lang) {
         this.defaultLanguage = lang
     }
-    
+
     _setInput(dirPath) {
         this.input = dirPath
     }
@@ -141,7 +144,9 @@ class HugoIndexer {
 
     createIndex() {
 
-        console.log(`Arguments: input: ${this.input}, output: ${this.output}`)
+        console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`)
+
+        createFolders(this.output)
 
         this.stream = fs.createWriteStream(this.output);
 
@@ -156,4 +161,4 @@ class HugoIndexer {
 
 }
 
-export { HugoIndexer, CONTENT_PATH, OUTPUT_INDEX_FILE }
+export { HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE }

@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 import { HugoIndexer } from './index.js'
 
-if (process.argv.indexOf("--help") != -1) {
-    // help
-    const help = `
+const help = `
 Creates lunr index file for multilingual hugo static site
 
 Usage:
@@ -18,7 +16,9 @@ Arguments:
     -o  set output index file path (default: /public/search-index.json')
     -l  set default language. will use this code ([.en, .ru etc] in the search json) (default: ru)
 `
-    console.log(help)
+
+if (process.argv.indexOf("--help") != -1) { // help
+    console.info(help)
 } else {
     new HugoIndexer().createIndex()
 }
