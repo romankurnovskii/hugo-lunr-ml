@@ -1,10 +1,9 @@
 <h1 align="center">hugo-lunr-ml</h1>
 <p align="center">Package for multilingual or not hugo site</p>
-
-Generates `search-index.json` file in the `public` folder. Ready to use by lunr.js
+<p align="center">Generates `search-index.json` file in the `public` folder. Ready to use by lunr.js</p>
 
 <p align="center">
-  <img src="./img/hugo-lunr-ml.png" alt="Hugo Lunr Multilanguage package">
+  <img src="https://github.com/romankurnovskii/hugo-lunr-ml/raw/main/img/hugo-lunr-ml.png" alt="Hugo Lunr Multilanguage package">
 </p>
 
 ## Installation
