@@ -3,6 +3,10 @@
 
 Generates `search-index.json` file in the `public` folder. Ready to use by lunr.js
 
+<p align="center">
+  <img src="./img/hugo-lunr-ml.png" alt="Hugo Lunr Multilanguage package">
+</p>
+
 ## Installation
 
 Install the hugo-lunr-ml utility via [npm](https://www.npmjs.com/package/hugo-lunr-ml):
@@ -29,7 +33,7 @@ By default module will read the `content` directory of you and output the lunr i
 ```
 -i  set input path to parse (default: content/**)
 -o  set output index file path (default: /public/search-index.json')
--l  set default language. will use this code ([.en, .ru etc] in the search json) (default: ru)
+-l  set default language. Will use this code ( [.en, .ru etc] in the search-index.json(default: system language) )
 ```
 
 ### Execute
@@ -69,7 +73,7 @@ $ npm run create-index
 }
 ```
 
-## How to connect with lunr.js
+## How to connect with [lunr.js](https://lunrjs.com/)
 
 How to use this `.json` witn lunr.js
 
@@ -110,4 +114,4 @@ let idxEng = lunr(function () {
 idxEng.search("my word request")
 ```
 
-> Initial project was hugo-lunr, last time updated 6 years ago. Current package skips nort needed files and creates separate data for each language.
+> Initial project was hugo-lunr, last time updated 6 years ago. Current package skips not needed files(images, etc) and creates separate index data for each language.

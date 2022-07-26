@@ -1,6 +1,6 @@
 {
   "name": "hugo-lunr-ml",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create lunr index file for multilingual hugo static site",
   "keywords": [
     "hugo",
