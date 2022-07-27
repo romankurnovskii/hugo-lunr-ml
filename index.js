@@ -1,164 +1,158 @@
 
-
-import fs from 'fs'
-import path from 'path'
-import glob from 'glob'
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+import glob from 'glob';
 import matter from 'gray-matter';
 import removeMd from 'remove-markdown';
-import { stripHtml } from "string-strip-html";
+import {stripHtml} from 'string-strip-html';
 
-import { createFolders, getSystemLang } from './utils.js';
+import {createFolders, getSystemLang} from './utils.js';
 
-
-const DEFAULT_LANGUAGE = 'ru'
-const CONTENT_PATH = 'content/**'
-const OUTPUT_INDEX_FILE = 'public/search-index.json'
+const DEFAULT_LANGUAGE = 'ru';
+const CONTENT_PATH = 'content/**';
+const OUTPUT_INDEX_FILE = 'public/search-index.json';
 
 class HugoIndexer {
+	constructor() {
+		this.defaultLanguage = getSystemLang();
+		this.input = CONTENT_PATH;
+		this.output = OUTPUT_INDEX_FILE;
+		this.baseDir = path.dirname(this.input);
+		this.extensions = ['.md', '.html'];
 
-    constructor() {
-        this.defaultLanguage = getSystemLang()
-        this.input = CONTENT_PATH
-        this.output = OUTPUT_INDEX_FILE;
-        this.baseDir = path.dirname(this.input);
-        this.extensions = ['.md', '.html']
+		this.indexData = {}; // Result index
+		this.indexData[DEFAULT_LANGUAGE] = [];
 
-        this.indexData = {} // result index
-        this.indexData[DEFAULT_LANGUAGE] = []
+		this._parseArgs();
+	}
 
-        this._parseArgs()
-    }
+	_parseArgs() {
+		if (process.argv.includes('-l')) {
+			// Default language
+			this.output = process.argv[process.argv.indexOf('-l') + 1];
+		}
 
-    _parseArgs() {
-        if (process.argv.indexOf("-l") != -1) {
-            // default language
-            this.output = process.argv[process.argv.indexOf("-l") + 1];
-        }
-        if (process.argv.indexOf("-i") != -1) {
-            // input
-            this.input = process.argv[process.argv.indexOf("-i") + 1];
-            console.log(process.argv.indexOf("-i"))
-        }
-        if (process.argv.indexOf("-o") != -1) {
-            // output
-            this.output = process.argv[process.argv.indexOf("-o") + 1];
-        }
-    }
+		if (process.argv.includes('-i')) {
+			// Input
+			this.input = process.argv[process.argv.indexOf('-i') + 1];
+			console.log(process.argv.indexOf('-i'));
+		}
 
-    parseContent(dirPath) {
-        const files = glob.sync(dirPath)
-        for (let file of files) {
-            const stats = fs.lstatSync(file)
-            if (stats.isFile()) {
-                this.parseFile(file)
-            }
-        }
-    }
+		if (process.argv.includes('-o')) {
+			// Output
+			this.output = process.argv[process.argv.indexOf('-o') + 1];
+		}
+	}
 
-    parseFile(filePath) {
-        const ext = path.extname(filePath)
+	parseContent(dirPath) {
+		const files = glob.sync(dirPath);
+		for (const file of files) {
+			const stats = fs.lstatSync(file);
+			if (stats.isFile()) {
+				this.parseFile(file);
+			}
+		}
+	}
 
-        if (!this.extensions.includes(ext)) {
-            return // not .md or .html
-        }
+	parseFile(filePath) {
+		const ext = path.extname(filePath);
 
-        const meta = matter.read(filePath);
-        const { data: postMeta, content: postContent } = meta
+		if (!this.extensions.includes(ext)) {
+			return; // Not .md or .html
+		}
 
-        let plainText = ""
-        if (ext == '.md') {
-            plainText = removeMd(postContent);
-        } else if (ext == '.html') {
-            plainText = stripHtml(postContent);
-        } else {
-            console.log("Sikpped file: " + filePath)
-        }
+		const meta = matter.read(filePath);
+		const {data: postMeta, content: postContent} = meta;
 
-        let tags = [];
+		let plainText = '';
+		if (ext === '.md') {
+			plainText = removeMd(postContent);
+		} else if (ext === '.html') {
+			plainText = stripHtml(postContent);
+		} else {
+			console.log('Sikpped file: ' + filePath);
+		}
 
-        if (postMeta.tags != undefined) {
-            tags = postMeta.tags;
-        }
+		let tags = [];
 
-        let [lang, uri] = this._getPostUrl(filePath, postMeta)
+		if (postMeta.tags) {
+			tags = postMeta.tags;
+		}
 
-        const item = {
-            'uri': uri,
-            'title': postMeta.title,
-            'content': plainText,
-            'tags': tags
-        };
+		let [lang, uri] = this._getPostUrl(filePath, postMeta);
 
-        if (lang) {
-            item['lang'] = lang
-        } else {
-            lang = DEFAULT_LANGUAGE
-        }
+		const item = {
+			uri,
+			title: postMeta.title,
+			content: plainText,
+			tags,
+		};
 
-        const indexPosts = this.indexData[lang] || []
-        indexPosts.push(item)
-        this.indexData[lang] = indexPosts
+		if (lang) {
+			item.lang = lang;
+		} else {
+			lang = DEFAULT_LANGUAGE;
+		}
 
-    }
+		const indexPosts = this.indexData[lang] || [];
+		indexPosts.push(item);
+		this.indexData[lang] = indexPosts;
+	}
 
-    _getPostUrl(filePath, postMeta) {
+	_getPostUrl(filePath, postMeta) {
+		let uri = '/' + filePath.slice(0, Math.max(0, filePath.lastIndexOf('.'))); // Remove extension .md || .html
+		uri = uri.replace(this.baseDir + '/', '');
 
-        let uri = '/' + filePath.substring(0, filePath.lastIndexOf('.')); // remove extension .md || .html
-        uri = uri.replace(this.baseDir + '/', '');
+		let lang = path.extname(uri);
 
-        let lang = path.extname(uri);
+		if (lang) {
+			// Remove lang extension [.en] etc
+			lang = lang.replace('.', '');
+			uri = uri.slice(0, Math.max(0, uri.lastIndexOf('.')));
+		}
 
-        if (lang) {
-            // remove lang extension [.en] etc
-            lang = lang.replace('.', '')
-            uri = uri.substring(0, uri.lastIndexOf('.'));
-        }
+		if (uri.endsWith('/index')) {
+			uri = uri.slice(0, -5);
+		}
 
-        if (uri.endsWith('/index')) {
-            uri = uri.slice(0, -5)
-        }
+		if (postMeta.slug !== undefined) {
+			uri = path.dirname(uri) + postMeta.slug;
+		}
 
-        if (postMeta.slug != undefined) {
-            uri = path.dirname(uri) + postMeta.slug;
-        }
+		if (postMeta.url !== undefined) {
+			uri = postMeta.url;
+		}
 
-        if (postMeta.url != undefined) {
-            uri = postMeta.url
-        }
+		return [lang, uri];
+	}
 
-        return [lang, uri]
+	_setDefaultLanguage(lang) {
+		this.defaultLanguage = lang;
+	}
 
-    }
+	_setInput(dirPath) {
+		this.input = dirPath;
+	}
 
-    _setDefaultLanguage(lang) {
-        this.defaultLanguage = lang
-    }
+	_setOutput(filePath) {
+		this.output = filePath;
+	}
 
-    _setInput(dirPath) {
-        this.input = dirPath
-    }
+	createIndex() {
+		console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`);
 
-    _setOutput(filePath) {
-        this.output = filePath
-    }
+		createFolders(this.output);
 
-    createIndex() {
+		this.stream = fs.createWriteStream(this.output);
 
-        console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`)
+		this.parseContent(this.input);
 
-        createFolders(this.output)
+		this.stream.write(JSON.stringify(this.indexData, null, 4));
+		this.stream.end();
 
-        this.stream = fs.createWriteStream(this.output);
-
-        this.parseContent(this.input)
-
-        this.stream.write(JSON.stringify(this.indexData, null, 4));
-        this.stream.end()
-
-        console.info(`Saved index: ${this.output}`)
-
-    }
-
+		console.info(`Saved index: ${this.output}`);
+	}
 }
 
-export { HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE }
+export {HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE};

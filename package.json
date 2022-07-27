@@ -1,11 +1,8 @@
 {
   "name": "hugo-lunr-ml",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Create lunr index file for multilingual hugo static site",
-  "keywords": [
-    "hugo",
-    "lunr"
-  ],
+  "license": "MIT",
   "homepage": "https://github.com/romankurnovskii/hugo-lunr-ml",
   "repository": {
     "type": "git",
@@ -14,13 +11,20 @@
   "bugs": {
     "url": "https://github.com/romankurnovskii/hugo-lunr-ml/issues"
   },
+  "keywords": [
+    "hugo",
+    "lunr",
+    "static site",
+    "search"
+  ],
   "main": "index.js",
   "type": "module",
   "bin": {
     "hugo-lunr-ml": "bin.js"
   },
   "scripts": {
-    "test": "node index.test.js"
+    "index": "node bin.js",
+    "test": "xo && node index.test.js"
   },
   "dependencies": {
     "glob": "^8.0.3",
@@ -28,6 +32,12 @@
     "remove-markdown": "^0.5.0",
     "string-strip-html": "11.0.0"
   },
-  "author": "Roman Kurnovskii",
-  "license": "ISC"
+  "author": {
+    "name": "Roman Kurnovskii",
+    "email": "r.kurnovskii@gmail.com",
+    "url": "https://romankurnovskii.com"
+  },
+  "devDependencies": {
+    "xo": "^0.51.0"
+  }
 }
