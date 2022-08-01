@@ -1,23 +1,24 @@
-
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import glob from 'glob';
 import matter from 'gray-matter';
+import lunr from 'lunr';
 import removeMd from 'remove-markdown';
 import {stripHtml} from 'string-strip-html';
-
 import {createFolders, getSystemLang} from './utils.js';
 
 const DEFAULT_LANGUAGE = 'ru';
 const CONTENT_PATH = 'content/**';
-const OUTPUT_INDEX_FILE = 'public/search-index.json';
+const OUTPUT_INDEX_FILE = 'static/search/index.json';
+const OUTPUT_LUNR_INDEX_FILE = 'static/search/lunr-index.json';
 
 class HugoIndexer {
 	constructor() {
 		this.defaultLanguage = getSystemLang();
 		this.input = CONTENT_PATH;
 		this.output = OUTPUT_INDEX_FILE;
+		this.outputLunr = OUTPUT_LUNR_INDEX_FILE;
 		this.baseDir = path.dirname(this.input);
 		this.extensions = ['.md', '.html'];
 
@@ -42,6 +43,11 @@ class HugoIndexer {
 		if (process.argv.includes('-o')) {
 			// Output
 			this.output = process.argv[process.argv.indexOf('-o') + 1];
+		}
+
+		if (process.argv.includes('-ol')) {
+			// Output for lunr index
+			this.outputLunr = process.argv[process.argv.indexOf('-ol') + 1];
 		}
 	}
 
@@ -151,7 +157,45 @@ class HugoIndexer {
 		this.stream.write(JSON.stringify(this.indexData, null, 4));
 		this.stream.end();
 
-		console.info(`Saved index: ${this.output}`);
+		console.info(`Saved json data: ${this.output}`);
+
+		this.saveLunrIndex();
+	}
+
+	saveLunrIndex() {
+		const contentMap = {};
+		function createIndex(lang, documents) {
+			contentMap[lang] = contentMap[lang] || {};
+			const idx = lunr(function () {
+				this.ref('uri');
+
+				this.field('title');
+				this.field('content');
+				this.field('description');
+
+				for (const doc of documents) {
+					this.add(doc);
+					contentMap[lang][doc.uri] = doc.title;
+				}
+			});
+			return idx;
+		}
+
+		const lunrIndex = {};
+		for (const lang of Object.keys(this.indexData)) {
+			const idx = createIndex(lang, this.indexData[lang]);
+			lunrIndex[lang] = idx;
+		}
+
+		lunrIndex.contentMap = contentMap;
+		const serializedIdx = JSON.stringify(lunrIndex);
+
+		try {
+			fs.writeFileSync(this.outputLunr, serializedIdx, {flag: 'w+'});
+			console.info(`Saved lunr index data: ${this.outputLunr}`);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 }
 

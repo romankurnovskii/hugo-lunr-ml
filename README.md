@@ -21,7 +21,7 @@ The easiest way to use hugo-lunr is via npm scripts:
 ```
   "scripts": {
     "create-index": "hugo-lunr-ml",
-    "create-index-io": "hugo-lunr-ml -i "content/**" -o public/my-index.json"
+    "create-index-io": "hugo-lunr-ml -i "content/**" -o static/my-index.json"
   },
 ```
 
@@ -31,8 +31,9 @@ By default module will read the `content` directory of you and output the lunr i
 
 ```
 -i  set input path to parse (default: content/**)
--o  set output index file path (default: /public/search-index.json')
--l  set default language. Will use this code ( [.en, .ru etc] in the search-index.json(default: system language) )
+-o  set output index file path (default: /static/seacrh/index.json')
+-l  set default language. Will use this code ( [.en, .ru etc] in the index.json(default: system language) )
+-ol  set output lunr index file path (default: /static/seacrh/lunr-index.json')
 ```
 
 ### Execute
@@ -41,7 +42,22 @@ By default module will read the `content` directory of you and output the lunr i
 $ npm run create-index
 ```
 
-**Example of result `.json` file:**
+
+**Example of result `lunr-index.json` file:**
+
+```json
+{
+  "ru": { ...some lunr staff... },
+  "en": { ...some lunr staff... },
+  "contentMap": {
+    "ru": { "/posts/post-sub01": "Test post 01 Ru" },
+    "en": { "/posts/post-sub01": "Test post 01 Eng" }
+  }
+}
+```
+
+**Example of result `index.json` file:**
+
 ```json
 {
     "ru": [
@@ -74,6 +90,10 @@ $ npm run create-index
 
 ## How to connect with [lunr.js](https://lunrjs.com/)
 
+
+1. Import/Fetch lunr-index.json
+2. Search
+
 How to use this `.json` witn lunr.js
 
 [How I use this index](https://romankurnovskii.com/en/posts/hugo-add-search-lunr-popup/#connect-searchresult-forms-with-lunrjs-search)
@@ -89,28 +109,30 @@ or in the Hugo template:
 ```
 
 ```javascript
-const filePath = 'public/search-index.json'
-const data = readFileSync(filePath);
-const fileData = JSON.parse(data)
-// fileData = { "en": [...], "otherLang": []}
+const getIndexData = async () => {
+	let response = await fetch(`/search/lunr-index.json`)
+	if (response.status != 200) {
+		throw new Error("Server Error");
+	}
+	// read response stream as text
+	let text_data = await response.text();
+	const idxData = JSON.parse(text_data)
+	const lngIdx = idxData[languageMode]
+	const idx = lunr.Index.load(lngIdx)
+	pagesStore = idxData['contentMap'][languageMode]
+	return idx
+}
 
-const engDocs = fileData['en']
-const ruDocs = fileData['ru']
-// ...
 
-// lunr.js index
-let idxEng = lunr(function () {
-  this.ref('name')
-  this.field('text')
+const idx = await getIndexData()
+const results = idx.search('my search query');
 
-  engDocs.forEach(function (doc) {
-    this.add(doc)
-  }, this)
-})
-// same for other lang
-
-// search
-idxEng.search("my word request")
 ```
 
-> Initial project was hugo-lunr, last time updated 6 years ago. Current package skips not needed files(images, etc) and creates separate index data for each language.
+
+## Notes
+
+### 2.0.1
+
+Creates stringified lunr-index. Now no need to create index every time on search request. Just need to fetch lunr-index.
+Index generation for 100.000 pages took 2min *once* during build. Search of popular query takes < 0.3sec
