@@ -1,6 +1,6 @@
 <h1 align="center">hugo-lunr-ml</h1>
-<p align="center">Package for multilingual or not hugo site</p>
-<p align="center">Generates `search-index.json` file in the `public` folder. Ready to use by lunr.js</p>
+<p align="center">Package for multilingual (or not) hugo site</p>
+<p align="center">Generates <b>ready to use</b> by lunr.js `lunr-index.json` file.</p>
 
 <p align="center">
   <img src="https://github.com/romankurnovskii/hugo-lunr-ml/raw/main/img/hugo-lunr-ml.png" alt="Hugo Lunr Multilanguage package">
@@ -27,7 +27,7 @@ The easiest way to use hugo-lunr is via npm scripts:
 
 ### Options
 
-By default module will read the `content` directory of you and output the lunr index to `search-index.json`. 
+By default module will read the `content` directory of you and output the lunr index to `lunr-index.json`. 
 
 ```
 -i  set input path to parse (default: content/**)
@@ -38,7 +38,7 @@ By default module will read the `content` directory of you and output the lunr i
 
 ### Execute
 
-```
+```sh
 $ npm run create-index
 ```
 
@@ -98,7 +98,7 @@ How to use this `.json` witn lunr.js
 
 [How I use this index](https://romankurnovskii.com/en/posts/hugo-add-search-lunr-popup/#connect-searchresult-forms-with-lunrjs-search)
 
-```javascript
+```sh
 npm install lunr
 ```
 
