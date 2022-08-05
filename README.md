@@ -109,6 +109,7 @@ or in the Hugo template:
 ```
 
 ```javascript
+const pagesStore = {} // need to map later title and uri
 const getIndexData = async () => {
 	let response = await fetch(`/search/lunr-index.json`)
 	if (response.status != 200) {
