@@ -4,7 +4,7 @@ import path from 'node:path';
 import {DEFAULT_LANGUAGE} from './index.js';
 
 const getSystemLang = () => {
-	let locale = new Intl.DateTimeFormat().resolvedOptions().locale;
+	let {locale} = new Intl.DateTimeFormat().resolvedOptions();
 	try {
 		locale = locale.slice(0, 2);
 	} catch {

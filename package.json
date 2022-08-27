@@ -1,6 +1,6 @@
 {
   "name": "hugo-lunr-ml",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Create lunr index file for multilingual hugo static site",
   "license": "MIT",
   "homepage": "https://github.com/romankurnovskii/hugo-lunr-ml",
@@ -32,14 +32,17 @@
     "gray-matter": "4.0.3",
     "lunr": "^2.3.9",
     "remove-markdown": "^0.5.0",
-    "string-strip-html": "11.0.1"
+    "string-strip-html": "^11.3.0"
+  },
+  "devDependencies": {
+    "xo": "^0.52.2"
   },
   "author": {
     "name": "Roman Kurnovskii",
     "email": "r.kurnovskii@gmail.com",
     "url": "https://romankurnovskii.com"
   },
-  "devDependencies": {
-    "xo": "^0.51.0"
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

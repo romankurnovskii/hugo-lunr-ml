@@ -6,6 +6,11 @@
   <img src="https://github.com/romankurnovskii/hugo-lunr-ml/raw/main/img/hugo-lunr-ml.png" alt="Hugo Lunr Multilanguage package">
 </p>
 
+[![NPM version][npm-image]][npm-url]
+![npm-typescript]
+[![License][github-license]][github-license-url]
+[![Install size][install-size]][install-size-url]
+
 ## Installation
 
 Install the hugo-lunr-ml utility via [npm](https://www.npmjs.com/package/hugo-lunr-ml):
@@ -18,7 +23,8 @@ $ npm install hugo-lunr-ml
 
 The easiest way to use hugo-lunr is via npm scripts:
 
-```
+**package.json**
+```json
   "scripts": {
     "create-index": "hugo-lunr-ml",
     "create-index-io": "hugo-lunr-ml -i "content/**" -o static/my-index.json"
@@ -137,3 +143,12 @@ const results = idx.search('my search query');
 
 Creates stringified lunr-index. Now no need to create index every time on search request. Just need to fetch lunr-index.
 Index generation for 100.000 pages took 2min *once* during build. Search of popular query takes < 0.3sec
+
+
+[npm-url]: https://www.npmjs.com/package/hugo-lunr-ml
+[npm-image]: https://img.shields.io/npm/v/hugo-lunr-ml
+[github-license]: https://img.shields.io/github/license/romankurnovskii/hugo-lunr-ml
+[github-license-url]: https://github.com/romankurnovskii/hugo-lunr-ml/blob/main/LICENSE
+[npm-typescript]: https://img.shields.io/npm/types/hugo-lunr-ml
+[install-size]: https://packagephobia.com/badge?p=hugo-lunr-ml
+[install-size-url]: https://packagephobia.com/result?p=hugo-lunr-ml
