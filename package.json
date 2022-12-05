@@ -32,7 +32,7 @@
     "gray-matter": "4.0.3",
     "lunr": "^2.3.9",
     "remove-markdown": "^0.5.0",
-    "string-strip-html": "^11.6.2"
+    "string-strip-html": "^13.0.0"
   },
   "devDependencies": {
     "xo": "^0.52.3"
