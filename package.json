@@ -35,7 +35,7 @@
     "string-strip-html": "^13.0.0"
   },
   "devDependencies": {
-    "xo": "^0.52.3"
+    "xo": "^0.53.1"
   },
   "author": {
     "name": "Roman Kurnovskii",
