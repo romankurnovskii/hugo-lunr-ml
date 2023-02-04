@@ -19,7 +19,7 @@ Arguments:
     -l  set default language. will use this code ([.en, .ru etc] in the search json) (default: ru)
 `;
 
-if (process.argv.includes('--help')) { // Help
+if (process.argv.includes('--help')) {
 	console.info(help);
 } else {
 	new HugoIndexer().createIndex();

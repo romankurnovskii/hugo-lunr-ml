@@ -1,6 +1,6 @@
 {
   "name": "hugo-lunr-ml",
-  "version": "2.3.1",
+  "version": "3.0.1",
   "description": "Create lunr index file for multilingual hugo static site",
   "license": "MIT",
   "homepage": "https://github.com/romankurnovskii/hugo-lunr-ml",
@@ -24,17 +24,19 @@
   },
   "scripts": {
     "index": "node bin.js",
-    "test": "xo && node index.test.js",
+    "test": "xo && npx mocha index.test.js",
     "xofix": "xo --fix"
   },
   "dependencies": {
     "glob": "^8.0.3",
     "gray-matter": "4.0.3",
     "lunr": "^2.3.9",
+    "lunr-languages": "^1.10.0",
     "remove-markdown": "^0.5.0",
-    "string-strip-html": "^13.0.0"
+    "string-strip-html": "^13.1.0"
   },
   "devDependencies": {
+    "mocha": "^10.2.0",
     "xo": "^0.53.1"
   },
   "author": {

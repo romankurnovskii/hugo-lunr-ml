@@ -1,37 +1,105 @@
 #!/usr/bin/env node
 import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
+import lunr from 'lunr';
+import {describe, it, before} from 'mocha';
 
-import {OUTPUT_INDEX_FILE, HugoIndexer} from './index.js';
+import {OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE, HugoIndexer} from './index.js';
 
-const index = new HugoIndexer();
-index._setOutput(OUTPUT_INDEX_FILE);
-index.createIndex();
+const DEFAULT_LANGUAGE = 'en';
 
-const expected = {
-	ru: [
-		{
-			uri: '/posts/post-sub01',
-			title: 'Test post 01 Ru',
-			content: '\nTest post',
-			tags: [],
-			lang: 'ru',
-		},
-	],
-	en: [
-		{
-			uri: '/posts/post-sub01',
-			title: 'Test post 01 Eng',
-			content: '\nTest post',
-			tags: [],
-			lang: 'en',
-		},
-	],
-};
+before(() => {
+	const index = new HugoIndexer();
+	index._setOutput(OUTPUT_INDEX_FILE);
+	index.createIndex();
+});
 
-setTimeout(() => {
-	const data = readFileSync(OUTPUT_INDEX_FILE);
-	const fileData = JSON.parse(data);
-	assert.equal(JSON.stringify(fileData), JSON.stringify(expected));
-}, 2000);
+describe('Search index', () => {
+	it('index content is equal to expected', () => {
+		// Expect
+		const expectedIndex = {
+			ru: [
+				{
+					uri: '/posts/post-sub01',
+					title: 'Текст-рыба',
+					content: '\nПовседневная практика показывает, что постоянный количественный рост и сфера нашей активности требуют от нас анализа направлений прогрессивного развития. Повседневная практика показывает, что дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании систем массового участия.\n\nТоварищи! рамки и место обучения кадров требуют от нас анализа соответствующий условий активизации. Не следует, однако забывать, что сложившаяся структура организации влечет за собой процесс внедрения и модернизации системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что новая модель организационной деятельности требуют определения и уточнения соответствующий условий активизации. Разнообразный и богатый опыт новая модель организационной деятельности позволяет выполнять важные задания по разработке дальнейших направлений развития. Равным образом начало повседневной работы по формированию позиции влечет за собой процесс внедрения и модернизации соответствующий условий активизации. Повседневная практика показывает, что сложившаяся структура организации позволяет оценить значение новых предложений.',
+					tags: [],
+					lang: 'ru',
+				},
+			],
+			en: [
+				{
+					uri: '/posts/post-sub01',
+					title: 'Test post 01 Eng',
+					content: '\nLorem Ipsum is simply dummy text of the printing and typesetting industry.\n\nLorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\n\nIt was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+					tags: [],
+					lang: 'en',
+				},
+			],
+		};
+
+		// Actual
+		const data = readFileSync(OUTPUT_INDEX_FILE);
+		const fileData = JSON.parse(data);
+
+		// Assert
+		assert.equal(JSON.stringify(fileData), JSON.stringify(expectedIndex));
+	});
+});
+
+describe('Lunr index', () => {
+	let lunrIndex;
+	let lngIdx = {};
+	let lngIdxRu = {};
+	let idx = {};
+	let idxRu = {};
+	before(() => {
+		lunrIndex = JSON.parse(readFileSync(OUTPUT_LUNR_INDEX_FILE));
+		lngIdx = lunrIndex[DEFAULT_LANGUAGE];
+		idx = lunr.Index.load(lngIdx);
+
+		// Ru
+		lngIdxRu = lunrIndex.ru;
+		idxRu = lunr.Index.load(lngIdxRu);
+	});
+
+	it('is created lunr index object correct', () => {
+		// Expect
+		const minSearchResultsLength = 1;
+
+		// Actual
+		const searchResult = idx.search('1960s');
+
+		// Assert
+		assert.equal(searchResult.length, minSearchResultsLength);
+	});
+
+	it('find russian post', () => {
+		// Expect
+		const pagesStore = lunrIndex.contentMap.ru;
+		const minSearchResultsLength = 1;
+		const expectedPageTitle = 'Текст-рыба';
+
+		// Actual
+		const searchResultRu = idxRu.search('рамки');
+
+		// Assert
+		assert.equal(searchResultRu.length, minSearchResultsLength);
+
+		const foundUri = searchResultRu[0].ref;
+		const foundPageTitle = pagesStore[foundUri];
+		assert.equal(foundPageTitle, expectedPageTitle);
+	});
+
+	it('return empty search result if there is no search request', () => {
+		// Expect
+		const minSearchResultsLength = 0;
+
+		// Actual
+		const searchResult = idx.search('some other string');
+
+		// Assert
+		assert.equal(searchResult.length, minSearchResultsLength);
+	});
+});
 

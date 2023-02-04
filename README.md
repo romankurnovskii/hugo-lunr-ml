@@ -100,9 +100,7 @@ $ npm run create-index
 1. Import/Fetch lunr-index.json
 2. Search
 
-How to use this `.json` witn lunr.js
-
-[How I use this index](https://romankurnovskii.com/en/posts/hugo-add-search-lunr-popup/#connect-searchresult-forms-with-lunrjs-search)
+How to use this `lunr-index.json` witn lunr.js
 
 ```sh
 npm install lunr
@@ -115,7 +113,7 @@ or in the Hugo template:
 ```
 
 ```javascript
-const pagesStore = {} // need to map later title and uri
+const pagesStore = {} // need to map later title and uri Ex: {"/local-href": "post title"}
 const getIndexData = async () => {
 	let response = await fetch(`/search/lunr-index.json`)
 	if (response.status != 200) {
@@ -130,19 +128,15 @@ const getIndexData = async () => {
 	return idx
 }
 
-
 const idx = await getIndexData()
 const results = idx.search('my search query');
 
+// get first found page title
+const foundUri = searchResultRu[0].ref;
+const foundPageTitle = pagesStore[foundUri];
 ```
 
 
-## Notes
-
-### 2.0.1
-
-Creates stringified lunr-index. Now no need to create index every time on search request. Just need to fetch lunr-index.
-Index generation for 100.000 pages took 2min *once* during build. Search of popular query takes < 0.3sec
 
 
 [npm-url]: https://www.npmjs.com/package/hugo-lunr-ml

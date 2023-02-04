@@ -6,7 +6,25 @@ import matter from 'gray-matter';
 import lunr from 'lunr';
 import removeMd from 'remove-markdown';
 import {stripHtml} from 'string-strip-html';
+import lunrStemmerSupport from 'lunr-languages/lunr.stemmer.support.js';
+import lunrMulti from 'lunr-languages/lunr.multi.js';
+import tinyseg from 'lunr-languages/tinyseg.js';
+import lunrJa from 'lunr-languages/lunr.ja.js';
+import lunrEs from 'lunr-languages/lunr.es.js';
+import lunrPt from 'lunr-languages/lunr.pt.js';
+import lunrDe from 'lunr-languages/lunr.de.js';
+import lunrRu from 'lunr-languages/lunr.ru.js';
+
 import {createFolders, getSystemLang} from './utils.js';
+
+lunrStemmerSupport(lunr);
+tinyseg(lunr);
+lunrMulti(lunr);
+lunrDe(lunr);
+lunrEs(lunr);
+lunrJa(lunr);
+lunrPt(lunr);
+lunrRu(lunr);
 
 const DEFAULT_LANGUAGE = 'ru';
 const CONTENT_PATH = 'content/**';
@@ -145,6 +163,11 @@ class HugoIndexer {
 		this.output = filePath;
 	}
 
+	_getLanguages() {
+		// Get list of language codes from created index
+		return Object.keys(this.indexData);
+	}
+
 	createIndex() {
 		console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`);
 
@@ -164,9 +187,15 @@ class HugoIndexer {
 
 	saveLunrIndex() {
 		const contentMap = {};
-		function createIndex(lang, documents) {
+		const languages = this._getLanguages();
+
+		function createLunrIndex(lang, documents) {
 			contentMap[lang] = contentMap[lang] || {};
 			const idx = lunr(function () {
+				if (languages.length > 1) {
+					this.use(lunr.multiLanguage(...languages));
+				}
+
 				this.ref('uri');
 
 				this.field('title');
@@ -182,8 +211,10 @@ class HugoIndexer {
 		}
 
 		const lunrIndex = {};
-		for (const lang of Object.keys(this.indexData)) {
-			const idx = createIndex(lang, this.indexData[lang]);
+		console.log('Languages in Index:', languages);
+
+		for (const lang of languages) {
+			const idx = createLunrIndex(lang, this.indexData[lang]);
 			lunrIndex[lang] = idx;
 		}
 
@@ -199,4 +230,4 @@ class HugoIndexer {
 	}
 }
 
-export {HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE};
+export {HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE};
