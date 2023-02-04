@@ -214,7 +214,13 @@ class HugoIndexer {
 		console.log('Languages in Index:', languages);
 
 		for (const lang of languages) {
-			const idx = createLunrIndex(lang, this.indexData[lang]);
+			let idx = {};
+			try {
+				idx = createLunrIndex(lang, this.indexData[lang]);
+			} catch {
+				console.error(`Error creating lunr index for language: ${lang}`);
+			}
+
 			lunrIndex[lang] = idx;
 		}
 

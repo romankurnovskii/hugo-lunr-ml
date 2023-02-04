@@ -120,8 +120,8 @@ const getIndexData = async () => {
 		throw new Error("Server Error");
 	}
 	// read response stream as text
-	let text_data = await response.text();
-	const idxData = JSON.parse(text_data)
+	let textData = await response.text();
+	const idxData = JSON.parse(textData)
 	const lngIdx = idxData[languageMode]
 	const idx = lunr.Index.load(lngIdx)
 	pagesStore = idxData['contentMap'][languageMode]
