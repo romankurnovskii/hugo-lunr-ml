@@ -1,6 +1,6 @@
 ---
 title: Текст-рыба
-description:
+description: описание
 toc: true
 authors:
 tags:

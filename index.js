@@ -109,6 +109,7 @@ class HugoIndexer {
 		const item = {
 			uri,
 			title: postMeta.title,
+			description: postMeta.description,
 			content: plainText,
 			tags,
 		};
