@@ -28,7 +28,7 @@
     "xofix": "xo --fix"
   },
   "dependencies": {
-    "glob": "^8.0.3",
+    "glob": "^9.3.2",
     "gray-matter": "4.0.3",
     "lunr": "^2.3.9",
     "lunr-languages": "^1.10.0",
