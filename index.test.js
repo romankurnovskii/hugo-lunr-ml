@@ -3,7 +3,6 @@ import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
 import lunr from 'lunr';
 import {describe, it, before} from 'mocha';
-
 import {OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE, HugoIndexer} from './index.js';
 
 const DEFAULT_LANGUAGE = 'en';

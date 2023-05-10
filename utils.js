@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-
 import {DEFAULT_LANGUAGE} from './index.js';
 
 const getSystemLang = () => {

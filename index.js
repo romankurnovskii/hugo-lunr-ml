@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import glob from 'glob';
+import {glob} from 'glob';
 import matter from 'gray-matter';
-import lunr from 'lunr';
 import removeMd from 'remove-markdown';
 import {stripHtml} from 'string-strip-html';
+import lunr from 'lunr';
 import lunrStemmerSupport from 'lunr-languages/lunr.stemmer.support.js';
 import lunrMulti from 'lunr-languages/lunr.multi.js';
 import tinyseg from 'lunr-languages/tinyseg.js';
@@ -14,7 +14,6 @@ import lunrEs from 'lunr-languages/lunr.es.js';
 import lunrPt from 'lunr-languages/lunr.pt.js';
 import lunrDe from 'lunr-languages/lunr.de.js';
 import lunrRu from 'lunr-languages/lunr.ru.js';
-
 import {createFolders, getSystemLang} from './utils.js';
 
 lunrStemmerSupport(lunr);
