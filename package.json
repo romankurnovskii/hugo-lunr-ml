@@ -1,6 +1,6 @@
 {
   "name": "hugo-lunr-ml",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Create lunr index file for multilingual hugo static site",
   "license": "MIT",
   "homepage": "https://github.com/romankurnovskii/hugo-lunr-ml",
@@ -45,6 +45,6 @@
     "url": "https://romankurnovskii.com"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   }
 }
