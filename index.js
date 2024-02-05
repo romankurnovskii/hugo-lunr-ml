@@ -46,24 +46,20 @@ class HugoIndexer {
 	}
 
 	_parseArgs() {
-		if (process.argv.includes('-l')) {
-			// Default language
+		if (process.argv.includes('-l')) { // Default language
 			this.output = process.argv[process.argv.indexOf('-l') + 1];
 		}
 
-		if (process.argv.includes('-i')) {
-			// Input
+		if (process.argv.includes('-i')) { // Input
 			this.input = process.argv[process.argv.indexOf('-i') + 1];
 			console.log(process.argv.indexOf('-i'));
 		}
 
-		if (process.argv.includes('-o')) {
-			// Output
+		if (process.argv.includes('-o')) { // Output
 			this.output = process.argv[process.argv.indexOf('-o') + 1];
 		}
 
-		if (process.argv.includes('-ol')) {
-			// Output for lunr index
+		if (process.argv.includes('-ol')) { // Output for lunr index
 			this.outputLunr = process.argv[process.argv.indexOf('-ol') + 1];
 		}
 	}
@@ -81,8 +77,8 @@ class HugoIndexer {
 	parseFile(filePath) {
 		const ext = path.extname(filePath);
 
-		if (!this.extensions.includes(ext)) {
-			return; // Not .md or .html
+		if (!this.extensions.includes(ext)) { // Not .md or .html
+			return;
 		}
 
 		const meta = matter.read(filePath);
@@ -94,7 +90,7 @@ class HugoIndexer {
 		} else if (ext === '.html') {
 			plainText = stripHtml(postContent);
 		} else {
-			console.log('Sikpped file: ' + filePath);
+			console.log('Skipped file: ' + filePath);
 		}
 
 		let tags = [];
@@ -172,16 +168,13 @@ class HugoIndexer {
 		console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`);
 
 		createFolders(this.output);
-
 		this.stream = fs.createWriteStream(this.output);
-
 		this.parseContent(this.input);
 
 		this.stream.write(JSON.stringify(this.indexData, null, 4));
 		this.stream.end();
 
 		console.info(`Saved json data: ${this.output}`);
-
 		this.saveLunrIndex();
 	}
 
@@ -197,7 +190,6 @@ class HugoIndexer {
 				}
 
 				this.ref('uri');
-
 				this.field('title');
 				this.field('content');
 				this.field('description');
