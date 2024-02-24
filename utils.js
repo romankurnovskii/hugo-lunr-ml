@@ -15,9 +15,9 @@ const getSystemLang = () => {
 };
 
 const createFolders = fullPath => {
-	const dir = path.dirname(fullPath);
-	if (!fs.existsSync(dir)) {
-		const result = fs.mkdirSync(dir, {recursive: true});
+	const directoryName = path.dirname(fullPath);
+	if (!fs.existsSync(directoryName)) {
+		const result = fs.mkdirSync(directoryName, {recursive: true});
 		console.log('Created output path:', result);
 	}
 };

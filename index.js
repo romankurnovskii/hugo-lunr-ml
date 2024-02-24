@@ -64,8 +64,8 @@ class HugoIndexer {
 		}
 	}
 
-	parseContent(dirPath) {
-		const files = glob.sync(dirPath);
+	parseContent(directoryPath) {
+		const files = glob.sync(directoryPath);
 		for (const file of files) {
 			const stats = fs.lstatSync(file);
 			if (stats.isFile()) {
@@ -151,8 +151,8 @@ class HugoIndexer {
 		this.defaultLanguage = lang;
 	}
 
-	_setInput(dirPath) {
-		this.input = dirPath;
+	_setInput(directoryPath) {
+		this.input = directoryPath;
 	}
 
 	_setOutput(filePath) {
@@ -183,7 +183,7 @@ class HugoIndexer {
 		const languages = this._getLanguages();
 
 		function createLunrIndex(lang, documents) {
-			contentMap[lang] = contentMap[lang] || {};
+			contentMap[lang] ||= {};
 			const index = lunr(function () {
 				if (languages.length > 1) {
 					this.use(lunr.multiLanguage(...languages));
