@@ -75,9 +75,9 @@ class HugoIndexer {
 	}
 
 	parseFile(filePath) {
-		const ext = path.extname(filePath);
+		const extension = path.extname(filePath);
 
-		if (!this.extensions.includes(ext)) { // Not .md or .html
+		if (!this.extensions.includes(extension)) { // Not .md or .html
 			return;
 		}
 
@@ -85,9 +85,9 @@ class HugoIndexer {
 		const {data: postMeta, content: postContent} = meta;
 
 		let plainText = '';
-		if (ext === '.md') {
+		if (extension === '.md') {
 			plainText = removeMd(postContent);
-		} else if (ext === '.html') {
+		} else if (extension === '.html') {
 			plainText = stripHtml(postContent);
 		} else {
 			console.log('Skipped file: ' + filePath);
@@ -184,7 +184,7 @@ class HugoIndexer {
 
 		function createLunrIndex(lang, documents) {
 			contentMap[lang] = contentMap[lang] || {};
-			const idx = lunr(function () {
+			const index = lunr(function () {
 				if (languages.length > 1) {
 					this.use(lunr.multiLanguage(...languages));
 				}
@@ -194,33 +194,33 @@ class HugoIndexer {
 				this.field('content');
 				this.field('description');
 
-				for (const doc of documents) {
-					this.add(doc);
-					contentMap[lang][doc.uri] = doc.title;
+				for (const document of documents) {
+					this.add(document);
+					contentMap[lang][document.uri] = document.title;
 				}
 			});
-			return idx;
+			return index;
 		}
 
 		const lunrIndex = {};
 		console.log('Languages in Index:', languages);
 
 		for (const lang of languages) {
-			let idx = {};
+			let index = {};
 			try {
-				idx = createLunrIndex(lang, this.indexData[lang]);
+				index = createLunrIndex(lang, this.indexData[lang]);
 			} catch {
 				console.error(`Error creating lunr index for language: ${lang}`);
 			}
 
-			lunrIndex[lang] = idx;
+			lunrIndex[lang] = index;
 		}
 
 		lunrIndex.contentMap = contentMap;
-		const serializedIdx = JSON.stringify(lunrIndex);
+		const serializedIndex = JSON.stringify(lunrIndex);
 
 		try {
-			fs.writeFileSync(this.outputLunr, serializedIdx, {flag: 'w+'});
+			fs.writeFileSync(this.outputLunr, serializedIndex, {flag: 'w+'});
 			console.info(`Saved lunr index data: ${this.outputLunr}`);
 		} catch (error) {
 			console.error(error);
@@ -228,4 +228,6 @@ class HugoIndexer {
 	}
 }
 
-export {HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE};
+export {
+	HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE,
+};

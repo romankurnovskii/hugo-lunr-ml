@@ -50,18 +50,18 @@ describe('Search index', () => {
 
 describe('Lunr index', () => {
 	let lunrIndex;
-	let lngIdx = {};
-	let lngIdxRu = {};
-	let idx = {};
-	let idxRu = {};
+	let lngIndex = {};
+	let lngIndexRu = {};
+	let index = {};
+	let indexRu = {};
 	before(() => {
 		lunrIndex = JSON.parse(readFileSync(OUTPUT_LUNR_INDEX_FILE));
-		lngIdx = lunrIndex[DEFAULT_LANGUAGE];
-		idx = lunr.Index.load(lngIdx);
+		lngIndex = lunrIndex[DEFAULT_LANGUAGE];
+		index = lunr.Index.load(lngIndex);
 
 		// Ru
-		lngIdxRu = lunrIndex.ru;
-		idxRu = lunr.Index.load(lngIdxRu);
+		lngIndexRu = lunrIndex.ru;
+		indexRu = lunr.Index.load(lngIndexRu);
 	});
 
 	it('is created lunr index object correct', () => {
@@ -69,7 +69,7 @@ describe('Lunr index', () => {
 		const minSearchResultsLength = 1;
 
 		// Actual
-		const searchResult = idx.search('1960s');
+		const searchResult = index.search('1960s');
 
 		// Assert
 		assert.equal(searchResult.length, minSearchResultsLength);
@@ -82,7 +82,7 @@ describe('Lunr index', () => {
 		const expectedPageTitle = 'Текст-рыба';
 
 		// Actual
-		const searchResultRu = idxRu.search('рамки');
+		const searchResultRu = indexRu.search('рамки');
 
 		// Assert
 		assert.equal(searchResultRu.length, minSearchResultsLength);
@@ -97,7 +97,7 @@ describe('Lunr index', () => {
 		const minSearchResultsLength = 0;
 
 		// Actual
-		const searchResult = idx.search('some other string');
+		const searchResult = index.search('some other string');
 
 		// Assert
 		assert.equal(searchResult.length, minSearchResultsLength);
