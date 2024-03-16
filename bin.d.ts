@@ -1,3 +1,7 @@
 export class HugoIndexer {
-  constructor();
+	constructor();
+	parseContent(directoryPath: string): void;
+	parseFile(filePath: string): void;
+	createIndex(): void;
+	saveLunrIndex(): void;
 }

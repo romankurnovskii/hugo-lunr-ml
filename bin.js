@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import process from 'node:process';
-import { HugoIndexer } from './index.js';
+import {HugoIndexer} from './index.js';
 
 const help = `
 Creates lunr index file for multilingual hugo static site
@@ -20,7 +20,7 @@ Arguments:
 `;
 
 if (process.argv.includes('--help')) {
-    console.info(help);
+	console.info(help);
 } else {
-    new HugoIndexer().createIndex();
+	new HugoIndexer().createIndex();
 }

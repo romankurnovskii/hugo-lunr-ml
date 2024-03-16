@@ -1,29 +1,31 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 export function createFolders(path: string): void;
 export function getSystemLang(): string;
 
-export interface PostMeta {
-  title: string;
-  description: string;
-  tags: string[];
-  slug?: string;
-  url?: string;
-}
+export type PostMeta = {
+	title: string;
+	description: string;
+	tags: string[];
+	slug?: string;
+	url?: string;
+};
 
-export interface Item {
-  uri: string;
-  title: string;
-  description: string;
-  content: string;
-  tags: string[];
-  lang?: string;
-}
+export type Item = {
+	uri: string;
+	title: string;
+	description: string;
+	content: string;
+	tags: string[];
+	lang?: string;
+};
 
 export class HugoIndexer {
-  constructor();
-  parseContent(directoryPath: string): void;
-  parseFile(filePath: string): void;
-  createIndex(): void;
-  saveLunrIndex(): void;
+	constructor();
+	parseContent(directoryPath: string): void;
+	parseFile(filePath: string): void;
+	createIndex(): void;
+	saveLunrIndex(): void;
 }
 
 export const DEFAULT_LANGUAGE: string;
