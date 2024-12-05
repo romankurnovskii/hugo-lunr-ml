@@ -29,7 +29,7 @@ jobs:
       - run: npm test
 
   create-github-release:
-    needs: publish-deno-jsr
+    # needs: publish-deno-jsr
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
