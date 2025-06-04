@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "mocha": "^11.0.1",
-    "xo": "^0.60.0"
+    "xo": "^1.0.5"
   },
   "author": {
     "name": "Roman Kurnovskii",
