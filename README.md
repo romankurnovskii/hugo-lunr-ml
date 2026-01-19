@@ -11,7 +11,32 @@
 [![License][github-license]][github-license-url]
 [![Install size][install-size]][install-size-url]
 
+
 `hugo-lunr-ml` npm package designed to enhance your Hugo site with powerful, multilingual search capabilities. This package automatically generates a `lunr-index.json` file that is ready to integrate with lunr.js, providing a seamless search experience for your Hugo site, whether it's multilingual or not.
+
+## Quick Start
+
+```sh
+npx hugo-lunr-ml -i content/ -o static/search/index.json -l en
+```
+
+## CLI Usage Examples
+
+- Generate index for default language:
+  ```sh
+  npx hugo-lunr-ml -l en
+  ```
+- Specify input/output:
+  ```sh
+  npx hugo-lunr-ml -i content/posts -o static/search/index.json
+  ```
+
+## Troubleshooting
+- Ensure your content directory exists and contains markdown or HTML files.
+- If you see permission errors, check your output directory permissions.
+
+## Contributing
+Pull requests are welcome! Please open an issue first to discuss major changes.
 
 ## Features
 - **Multilingual Support**: Generate search indexes in multiple languages for your Hugo site.

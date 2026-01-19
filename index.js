@@ -31,37 +31,16 @@ const OUTPUT_INDEX_FILE = 'static/search/index.json';
 const OUTPUT_LUNR_INDEX_FILE = 'static/search/lunr-index.json';
 
 class HugoIndexer {
-	constructor() {
-		this.defaultLanguage = getSystemLang();
-		this.input = CONTENT_PATH;
-		this.output = OUTPUT_INDEX_FILE;
-		this.outputLunr = OUTPUT_LUNR_INDEX_FILE;
+	constructor(options = {}) {
+		this.defaultLanguage = options.defaultLanguage || getSystemLang();
+		this.input = options.input || CONTENT_PATH;
+		this.output = options.output || OUTPUT_INDEX_FILE;
+		this.outputLunr = options.outputLunr || OUTPUT_LUNR_INDEX_FILE;
 		this.baseDir = path.dirname(this.input);
 		this.extensions = ['.md', '.html'];
 
 		this.indexData = {}; // Result index
-		this.indexData[DEFAULT_LANGUAGE] = [];
-
-		this._parseArgs();
-	}
-
-	_parseArgs() {
-		if (process.argv.includes('-l')) { // Default language
-			this.output = process.argv[process.argv.indexOf('-l') + 1];
-		}
-
-		if (process.argv.includes('-i')) { // Input
-			this.input = process.argv[process.argv.indexOf('-i') + 1];
-			console.log(process.argv.indexOf('-i'));
-		}
-
-		if (process.argv.includes('-o')) { // Output
-			this.output = process.argv[process.argv.indexOf('-o') + 1];
-		}
-
-		if (process.argv.includes('-ol')) { // Output for lunr index
-			this.outputLunr = process.argv[process.argv.indexOf('-ol') + 1];
-		}
+		this.indexData[this.defaultLanguage] = [];
 	}
 
 	parseContent(directoryPath) {
@@ -168,14 +147,16 @@ class HugoIndexer {
 		console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`);
 
 		createFolders(this.output);
-		this.stream = fs.createWriteStream(this.output);
 		this.parseContent(this.input);
 
-		this.stream.write(JSON.stringify(this.indexData, null, 4));
-		this.stream.end();
-
-		console.info(`Saved json data: ${this.output}`);
-		this.saveLunrIndex();
+		fs.promises.writeFile(this.output, JSON.stringify(this.indexData, null, 4), {flag: 'w+'})
+			.then(() => {
+				console.info(`Saved json data: ${this.output}`);
+				this.saveLunrIndex();
+			})
+			.catch((err) => {
+				console.error('Error writing index file:', err);
+			});
 	}
 
 	saveLunrIndex() {
@@ -219,12 +200,13 @@ class HugoIndexer {
 		lunrIndex.contentMap = contentMap;
 		const serializedIndex = JSON.stringify(lunrIndex);
 
-		try {
-			fs.writeFileSync(this.outputLunr, serializedIndex, {flag: 'w+'});
-			console.info(`Saved lunr index data: ${this.outputLunr}`);
-		} catch (error) {
-			console.error(error);
-		}
+		fs.promises.writeFile(this.outputLunr, serializedIndex, {flag: 'w+'})
+			.then(() => {
+				console.info(`Saved lunr index data: ${this.outputLunr}`);
+			})
+			.catch((error) => {
+				console.error('Error writing lunr index file:', error);
+			});
 	}
 }
 

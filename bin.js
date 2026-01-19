@@ -1,26 +1,27 @@
+
 #!/usr/bin/env node
-import process from 'node:process';
-import {HugoIndexer} from './index.js';
+import { Command } from 'commander';
+import { HugoIndexer } from './index.js';
 
-const help = `
-Creates lunr index file for multilingual hugo static site
+const program = new Command();
+program
+    .option('-i, --input <path>', 'Set input path to parse', 'content/**')
+    .option('-o, --output <file>', 'Set output index file path', 'static/search/index.json')
+    .option('-ol, --output-lunr <file>', 'Set output lunr index file path', 'static/search/lunr-index.json')
+    .option('-l, --lang <code>', 'Set default language', 'ru')
+    .helpOption('-h, --help', 'Display help for command')
+    .parse(process.argv);
 
-Usage:
+const opts = program.opts();
 
-    hugo-lunr-ml [arguments]
-    or
-    ./module_path/index.js
-
-Arguments:
-
-    -i  set input path to parse (default: content/**)
-    -o  set output index file path (default: /static/search/index.json')
-    -ol set output lunr index file path (default: /static/search/lunr-index.json')
-    -l  set default language. will use this code ([.en, .ru etc] in the search json) (default: ru)
-`;
-
-if (process.argv.includes('--help')) {
-	console.info(help);
-} else {
-	new HugoIndexer().createIndex();
+try {
+    new HugoIndexer({
+        input: opts.input,
+        output: opts.output,
+        outputLunr: opts.outputLunr,
+        defaultLanguage: opts.lang
+    }).createIndex();
+} catch (err) {
+    console.error('Error:', err.message);
+    process.exit(1);
 }
