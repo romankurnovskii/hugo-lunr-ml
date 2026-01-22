@@ -29,6 +29,8 @@
     "xofix": "xo --fix"
   },
   "dependencies": {
+    "@node-rs/jieba": "^2.0.1",
+    "commander": "^14.0.2",
     "glob": "^13.0.0",
     "gray-matter": "4.0.3",
     "lunr": "^2.3.9",
