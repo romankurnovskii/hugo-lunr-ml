@@ -11,7 +11,6 @@
 [![License][github-license]][github-license-url]
 [![Install size][install-size]][install-size-url]
 
-
 `hugo-lunr-ml` npm package designed to enhance your Hugo site with powerful, multilingual search capabilities. This package automatically generates a `lunr-index.json` file that is ready to integrate with lunr.js, providing a seamless search experience for your Hugo site, whether it's multilingual or not.
 
 ## Quick Start
@@ -32,16 +31,20 @@ npx hugo-lunr-ml -i content/ -o static/search/index.json -l en
   ```
 
 ## Troubleshooting
+
 - Ensure your content directory exists and contains markdown or HTML files.
 - If you see permission errors, check your output directory permissions.
 
 ## Contributing
+
 Pull requests are welcome! Please open an issue first to discuss major changes.
 
 ## Features
+
 - **Multilingual Support**: Generate search indexes in multiple languages for your Hugo site.
 - **Easy Integration**: Directly integrates with lunr.js for a powerful search experience.
 - **Customizable**: Offers options for custom input paths, output paths, and default languages to fit your site's structure.
+- **Extended Language Support**: Supports over 25 languages including Arabic, Chinese (with segmentation), Thai (with segmentation), Russian, Spanish, and more.
 
 ## Getting Started
 
@@ -52,11 +55,13 @@ Install the hugo-lunr-ml utility via [npm](https://www.npmjs.com/package/hugo-lu
 ```
 npm install hugo-lunr-ml
 ```
+
 ### Adding to Your Project
 
 Add the following scripts to your `package.json` file. This script simplifies the generation of your search index.
 
 **package.json**
+
 ```json
   "scripts": {
     "create-index": "hugo-lunr-ml"
@@ -70,7 +75,7 @@ Add the following scripts to your `package.json` file. This script simplifies th
 - `-i`: Set the input path to parse (default: `content/**`)
 - `-o`: Set the output path for the index file (default: `/static/search/index.json`)
 - `-l`: Set the default language. Utilizes language codes (e.g., [`.en`, `.ru`, etc] in the `index.json` (default: system language) )
-- `-ol`: Set the output path for the lunr index file (default: `/static/seacrh/lunr-index.json`)
+- `-L`: Set the output path for the lunr index file (default: `/static/search/lunr-index.json`)
 
 ### Generating the Index
 
@@ -107,12 +112,12 @@ const getIndexData = async () => {
   const idxData = JSON.parse(textData);
   const lngIdx = idxData[languageMode];
   const idx = lunr.Index.load(lngIdx);
-  pagesStore = idxData['contentMap'][languageMode];
+  pagesStore = idxData["contentMap"][languageMode];
   return idx;
-}
+};
 
 const idx = await getIndexData();
-const results = idx.search('my search query');
+const results = idx.search("my search query");
 
 // Example: Retrieve the first found page title
 const foundUri = results[0].ref;
