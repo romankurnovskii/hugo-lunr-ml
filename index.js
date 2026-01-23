@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import process from 'node:process';
 import {glob} from 'glob';
 import matter from 'gray-matter';
 import removeMd from 'remove-markdown';
@@ -8,22 +7,68 @@ import {stripHtml} from 'string-strip-html';
 import lunr from 'lunr';
 import lunrStemmerSupport from 'lunr-languages/lunr.stemmer.support.js';
 import lunrMulti from 'lunr-languages/lunr.multi.js';
+import wordcut from 'lunr-languages/wordcut.js';
 import tinyseg from 'lunr-languages/tinyseg.js';
-import lunrJa from 'lunr-languages/lunr.ja.js';
-import lunrEs from 'lunr-languages/lunr.es.js';
-import lunrPt from 'lunr-languages/lunr.pt.js';
+import lunrAr from 'lunr-languages/lunr.ar.js';
+import lunrDa from 'lunr-languages/lunr.da.js';
 import lunrDe from 'lunr-languages/lunr.de.js';
+import lunrEl from 'lunr-languages/lunr.el.js';
+import lunrEs from 'lunr-languages/lunr.es.js';
+import lunrFi from 'lunr-languages/lunr.fi.js';
+import lunrFr from 'lunr-languages/lunr.fr.js';
+import lunrHe from 'lunr-languages/lunr.he.js';
+import lunrHi from 'lunr-languages/lunr.hi.js';
+import lunrHu from 'lunr-languages/lunr.hu.js';
+import lunrHy from 'lunr-languages/lunr.hy.js';
+import lunrIt from 'lunr-languages/lunr.it.js';
+import lunrJa from 'lunr-languages/lunr.ja.js';
+import lunrKn from 'lunr-languages/lunr.kn.js';
+import lunrKo from 'lunr-languages/lunr.ko.js';
+import lunrNl from 'lunr-languages/lunr.nl.js';
+import lunrNo from 'lunr-languages/lunr.no.js';
+import lunrPt from 'lunr-languages/lunr.pt.js';
+import lunrRo from 'lunr-languages/lunr.ro.js';
 import lunrRu from 'lunr-languages/lunr.ru.js';
+import lunrSv from 'lunr-languages/lunr.sv.js';
+import lunrTa from 'lunr-languages/lunr.ta.js';
+import lunrTe from 'lunr-languages/lunr.te.js';
+import lunrTh from 'lunr-languages/lunr.th.js';
+import lunrTr from 'lunr-languages/lunr.tr.js';
+import lunrVi from 'lunr-languages/lunr.vi.js';
+import lunrZh from 'lunr-languages/lunr.zh.js';
 import {createFolders, getSystemLang} from './utils.js';
 
 lunrStemmerSupport(lunr);
+lunr.wordcut = wordcut;
 tinyseg(lunr);
 lunrMulti(lunr);
+lunrAr(lunr);
+lunrDa(lunr);
 lunrDe(lunr);
+lunrEl(lunr);
 lunrEs(lunr);
+lunrFi(lunr);
+lunrFr(lunr);
+lunrHe(lunr);
+lunrHi(lunr);
+lunrHu(lunr);
+lunrHy(lunr);
+lunrIt(lunr);
 lunrJa(lunr);
+lunrKn(lunr);
+lunrKo(lunr);
+lunrNl(lunr);
+lunrNo(lunr);
 lunrPt(lunr);
+lunrRo(lunr);
 lunrRu(lunr);
+lunrSv(lunr);
+lunrTa(lunr);
+lunrTe(lunr);
+lunrTh(lunr);
+lunrTr(lunr);
+lunrVi(lunr);
+lunrZh(lunr);
 
 const DEFAULT_LANGUAGE = 'ru';
 const CONTENT_PATH = 'content/**';
@@ -31,37 +76,16 @@ const OUTPUT_INDEX_FILE = 'static/search/index.json';
 const OUTPUT_LUNR_INDEX_FILE = 'static/search/lunr-index.json';
 
 class HugoIndexer {
-	constructor() {
-		this.defaultLanguage = getSystemLang();
-		this.input = CONTENT_PATH;
-		this.output = OUTPUT_INDEX_FILE;
-		this.outputLunr = OUTPUT_LUNR_INDEX_FILE;
+	constructor(options = {}) {
+		this.defaultLanguage = options.defaultLanguage || getSystemLang();
+		this.input = options.input || CONTENT_PATH;
+		this.output = options.output || OUTPUT_INDEX_FILE;
+		this.outputLunr = options.outputLunr || OUTPUT_LUNR_INDEX_FILE;
 		this.baseDir = path.dirname(this.input);
 		this.extensions = ['.md', '.html'];
 
 		this.indexData = {}; // Result index
-		this.indexData[DEFAULT_LANGUAGE] = [];
-
-		this._parseArgs();
-	}
-
-	_parseArgs() {
-		if (process.argv.includes('-l')) { // Default language
-			this.output = process.argv[process.argv.indexOf('-l') + 1];
-		}
-
-		if (process.argv.includes('-i')) { // Input
-			this.input = process.argv[process.argv.indexOf('-i') + 1];
-			console.log(process.argv.indexOf('-i'));
-		}
-
-		if (process.argv.includes('-o')) { // Output
-			this.output = process.argv[process.argv.indexOf('-o') + 1];
-		}
-
-		if (process.argv.includes('-ol')) { // Output for lunr index
-			this.outputLunr = process.argv[process.argv.indexOf('-ol') + 1];
-		}
+		this.indexData[this.defaultLanguage] = [];
 	}
 
 	parseContent(directoryPath) {
@@ -112,7 +136,7 @@ class HugoIndexer {
 		if (lang) {
 			item.lang = lang;
 		} else {
-			lang = DEFAULT_LANGUAGE;
+			lang = this.defaultLanguage;
 		}
 
 		const indexPosts = this.indexData[lang] || [];
@@ -164,21 +188,22 @@ class HugoIndexer {
 		return Object.keys(this.indexData);
 	}
 
-	createIndex() {
+	async createIndex() {
 		console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`);
 
 		createFolders(this.output);
-		this.stream = fs.createWriteStream(this.output);
 		this.parseContent(this.input);
 
-		this.stream.write(JSON.stringify(this.indexData, null, 4));
-		this.stream.end();
-
-		console.info(`Saved json data: ${this.output}`);
-		this.saveLunrIndex();
+		try {
+			await fs.promises.writeFile(this.output, JSON.stringify(this.indexData, null, 4), {flag: 'w+'});
+			console.info(`Saved json data: ${this.output}`);
+			await this.saveLunrIndex();
+		} catch (error) {
+			console.error('Error writing index file:', error);
+		}
 	}
 
-	saveLunrIndex() {
+	async saveLunrIndex() {
 		const contentMap = {};
 		const languages = this._getLanguages();
 
@@ -220,10 +245,10 @@ class HugoIndexer {
 		const serializedIndex = JSON.stringify(lunrIndex);
 
 		try {
-			fs.writeFileSync(this.outputLunr, serializedIndex, {flag: 'w+'});
+			await fs.promises.writeFile(this.outputLunr, serializedIndex, {flag: 'w+'});
 			console.info(`Saved lunr index data: ${this.outputLunr}`);
 		} catch (error) {
-			console.error(error);
+			console.error('Error writing lunr index file:', error);
 		}
 	}
 }

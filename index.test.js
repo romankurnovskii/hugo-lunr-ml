@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @stylistic/max-len */
 import assert from 'node:assert';
 import {readFileSync} from 'node:fs';
 import lunr from 'lunr';
@@ -7,10 +8,10 @@ import {OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE, HugoIndexer} from './index.js
 
 const DEFAULT_LANGUAGE = 'en';
 
-before(() => {
-	const index = new HugoIndexer();
+before(async () => {
+	const index = new HugoIndexer({defaultLanguage: 'ru'});
 	index._setOutput(OUTPUT_INDEX_FILE);
-	index.createIndex();
+	await index.createIndex();
 });
 
 describe('Search index', () => {
@@ -73,6 +74,12 @@ describe('Lunr index', () => {
 
 		// Assert
 		assert.equal(searchResult.length, minSearchResultsLength);
+	});
+
+	it('supports multiple languages (zh)', () => {
+		const index = new HugoIndexer({defaultLanguage: 'zh'});
+		// Check if it doesn't throw and initializes
+		assert.doesNotThrow(() => index._getLanguages());
 	});
 
 	it('find russian post', () => {
