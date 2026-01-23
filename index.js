@@ -136,7 +136,7 @@ class HugoIndexer {
 		if (lang) {
 			item.lang = lang;
 		} else {
-			lang = DEFAULT_LANGUAGE;
+			lang = this.defaultLanguage;
 		}
 
 		const indexPosts = this.indexData[lang] || [];
