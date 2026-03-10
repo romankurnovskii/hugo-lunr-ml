@@ -82,7 +82,7 @@ class HugoIndexer {
 		this.output = options.output || OUTPUT_INDEX_FILE;
 		this.outputLunr = options.outputLunr || OUTPUT_LUNR_INDEX_FILE;
 		this.baseDir = path.dirname(this.input);
-		this.extensions = ['.md', '.html'];
+		this.extensions = ['.md', '.html', '.mdx'];
 
 		this.indexData = {}; // Result index
 		this.indexData[this.defaultLanguage] = [];
@@ -109,7 +109,7 @@ class HugoIndexer {
 		const {data: postMeta, content: postContent} = meta;
 
 		let plainText = '';
-		if (extension === '.md') {
+		if (extension === '.md' || extension === '.mdx') {
 			plainText = removeMd(postContent);
 		} else if (extension === '.html') {
 			plainText = stripHtml(postContent);
