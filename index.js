@@ -101,12 +101,38 @@ class HugoIndexer {
 	parseFile(filePath) {
 		const extension = path.extname(filePath);
 
-		if (!this.extensions.includes(extension)) { // Not .md or .html
+		if (!this.extensions.includes(extension)) {
+			// Not .md, .html or .mdx
 			return;
 		}
 
-		const meta = matter.read(filePath);
-		const {data: postMeta, content: postContent} = meta;
+		let postMeta = {};
+		let postContent = '';
+
+		if (extension === '.mdx') {
+			const fileContent = fs.readFileSync(filePath, 'utf8');
+			// Try to extract metadata from export const metadata = { ... }
+			const metadataMatch = fileContent.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
+			if (metadataMatch) {
+				try {
+					// Evaluate metadata object safely
+					// eslint-disable-next-line no-new-func -- Safe evaluation of metadata object
+					const parseMetadata = new Function(`return ${metadataMatch[1]}`);
+					postMeta = parseMetadata();
+				} catch (error) {
+					console.error('Error parsing metadata from MDX file:', filePath, error);
+				}
+			}
+
+			// Remove metadata from content
+			postContent = fileContent
+				.replace(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/, '')
+				.trim();
+		} else {
+			const meta = matter.read(filePath);
+			postMeta = meta.data;
+			postContent = meta.content;
+		}
 
 		let plainText = '';
 		if (extension === '.md' || extension === '.mdx') {
@@ -195,7 +221,9 @@ class HugoIndexer {
 		this.parseContent(this.input);
 
 		try {
-			await fs.promises.writeFile(this.output, JSON.stringify(this.indexData, null, 4), {flag: 'w+'});
+			await fs.promises.writeFile(this.output, JSON.stringify(this.indexData, null, 4), {
+				flag: 'w+',
+			});
 			console.info(`Saved json data: ${this.output}`);
 			await this.saveLunrIndex();
 		} catch (error) {
@@ -254,5 +282,9 @@ class HugoIndexer {
 }
 
 export {
-	HugoIndexer, DEFAULT_LANGUAGE, CONTENT_PATH, OUTPUT_INDEX_FILE, OUTPUT_LUNR_INDEX_FILE,
+	HugoIndexer,
+	DEFAULT_LANGUAGE,
+	CONTENT_PATH,
+	OUTPUT_INDEX_FILE,
+	OUTPUT_LUNR_INDEX_FILE,
 };

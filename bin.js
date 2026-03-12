@@ -7,7 +7,11 @@ const program = new Command();
 program
 	.option('-i, --input <path>', 'Set input path to parse', 'content/**')
 	.option('-o, --output <file>', 'Set output index file path', 'static/search/index.json')
-	.option('-L, --output-lunr <file>', 'Set output lunr index file path', 'static/search/lunr-index.json')
+	.option(
+		'-L, --output-lunr <file>',
+		'Set output lunr index file path',
+		'static/search/lunr-index.json',
+	)
 	.option('-l, --lang <code>', 'Set default language', 'ru')
 	.helpOption('-h, --help', 'Display help for command')
 	.parse(process.argv);
