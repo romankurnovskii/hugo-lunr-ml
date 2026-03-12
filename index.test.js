@@ -23,7 +23,8 @@ describe('Search index', () => {
 					uri: '/posts/post-sub01',
 					title: 'Текст-рыба',
 					description: 'описание',
-					content: '\nПовседневная практика показывает, что постоянный количественный рост и сфера нашей активности требуют от нас анализа направлений прогрессивного развития. Повседневная практика показывает, что дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании систем массового участия.\n\nТоварищи! Рамки и место обучения кадров требуют от нас анализа соответствующий условий активизации. Не следует, однако забывать, что сложившаяся структура организации влечет за собой процесс внедрения и модернизации системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что новая модель организационной деятельности требуют определения и уточнения соответствующий условий активизации. Разнообразный и богатый опыт новая модель организационной деятельности позволяет выполнять важные задания по разработке дальнейших направлений развития. Равным образом начало повседневной работы по формированию позиции влечет за собой процесс внедрения и модернизации соответствующий условий активизации. Повседневная практика показывает, что сложившаяся структура организации позволяет оценить значение новых предложений.',
+					content:
+            '\nПовседневная практика показывает, что постоянный количественный рост и сфера нашей активности требуют от нас анализа направлений прогрессивного развития. Повседневная практика показывает, что дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании систем массового участия.\n\nТоварищи! Рамки и место обучения кадров требуют от нас анализа соответствующий условий активизации. Не следует, однако забывать, что сложившаяся структура организации влечет за собой процесс внедрения и модернизации системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что новая модель организационной деятельности требуют определения и уточнения соответствующий условий активизации. Разнообразный и богатый опыт новая модель организационной деятельности позволяет выполнять важные задания по разработке дальнейших направлений развития. Равным образом начало повседневной работы по формированию позиции влечет за собой процесс внедрения и модернизации соответствующий условий активизации. Повседневная практика показывает, что сложившаяся структура организации позволяет оценить значение новых предложений.',
 					tags: [],
 					lang: 'ru',
 				},
@@ -33,8 +34,17 @@ describe('Search index', () => {
 					uri: '/posts/post-sub01',
 					title: 'Test post 01 Eng',
 					description: null,
-					content: '\nLorem Ipsum is simply dummy text of the printing and typesetting industry.\n\nLorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\n\nIt was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+					content:
+            '\nLorem Ipsum is simply dummy text of the printing and typesetting industry.\n\nLorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\n\nIt was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
 					tags: [],
+					lang: 'en',
+				},
+				{
+					uri: '/posts/post-mdx-test',
+					title: 'Test MDX Post',
+					description: 'This is a test MDX file for verifying MDX support',
+					content: 'MDX Test Content\n\nThis is a test post written in MDX format to verify that the hugo-lunr-ml package correctly indexes MDX files.\n\nMDX files support both Markdown syntax and React components. This example demonstrates that:\n\nThe metadata is extracted from export const metadata\nContent is properly parsed and indexed\nThe search index includes title, description, and content\n\nFeatures Tested\n\nMDX metadata extraction using export const metadata\nContent parsing and indexing\nMultilingual support (this file is in English)\n\nThe hugo-lunr-ml package correctly handles MDX files and includes them in the search index.',
+					tags: ['test', 'mdx'],
 					lang: 'en',
 				},
 			],
@@ -110,4 +120,3 @@ describe('Lunr index', () => {
 		assert.equal(searchResult.length, minSearchResultsLength);
 	});
 });
-

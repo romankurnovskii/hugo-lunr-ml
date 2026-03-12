@@ -17,6 +17,17 @@
             "content": "\nLorem Ipsum is simply dummy text of the printing and typesetting industry.\n\nLorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\n\nIt was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             "tags": [],
             "lang": "en"
+        },
+        {
+            "uri": "/posts/post-mdx-test",
+            "title": "Test MDX Post",
+            "description": "This is a test MDX file for verifying MDX support",
+            "content": "MDX Test Content\n\nThis is a test post written in MDX format to verify that the hugo-lunr-ml package correctly indexes MDX files.\n\nMDX files support both Markdown syntax and React components. This example demonstrates that:\n\nThe metadata is extracted from export const metadata\nContent is properly parsed and indexed\nThe search index includes title, description, and content\n\nFeatures Tested\n\nMDX metadata extraction using export const metadata\nContent parsing and indexing\nMultilingual support (this file is in English)\n\nThe hugo-lunr-ml package correctly handles MDX files and includes them in the search index.",
+            "tags": [
+                "test",
+                "mdx"
+            ],
+            "lang": "en"
         }
     ]
 }

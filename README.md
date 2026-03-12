@@ -45,6 +45,7 @@ Pull requests are welcome! Please open an issue first to discuss major changes.
 - **Easy Integration**: Directly integrates with lunr.js for a powerful search experience.
 - **Customizable**: Offers options for custom input paths, output paths, and default languages to fit your site's structure.
 - **Extended Language Support**: Supports over 25 languages including Arabic, Chinese (with segmentation), Thai (with segmentation), Russian, Spanish, and more.
+- **Multiple File Formats**: Supports `.md`, `.html`, and `.mdx` files for indexing.
 
 ## Getting Started
 
