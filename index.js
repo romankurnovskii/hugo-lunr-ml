@@ -112,7 +112,7 @@ class HugoIndexer {
 		if (extension === '.mdx') {
 			const fileContent = fs.readFileSync(filePath, 'utf8');
 			// Try to extract metadata from export const metadata = { ... }
-			const metadataMatch = fileContent.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/);
+			const metadataMatch = fileContent.match(/export\s+const\s+metadata\s*=\s*(\{.*?\});/sv);
 			if (metadataMatch) {
 				try {
 					// Evaluate metadata object safely
@@ -126,7 +126,7 @@ class HugoIndexer {
 
 			// Remove metadata from content
 			postContent = fileContent
-				.replace(/export\s+const\s+metadata\s*=\s*({[\s\S]*?});/, '')
+				.replace(/export\s+const\s+metadata\s*=\s*(\{.*?\});/sv, '')
 				.trim();
 		} else {
 			const meta = matter.read(filePath);
