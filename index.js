@@ -2,13 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {glob} from 'glob';
 import matter from 'gray-matter';
-import removeMd from 'remove-markdown';
-import {stripHtml} from 'string-strip-html';
 import lunr from 'lunr';
-import lunrStemmerSupport from 'lunr-languages/lunr.stemmer.support.js';
-import lunrMulti from 'lunr-languages/lunr.multi.js';
-import wordcut from 'lunr-languages/wordcut.js';
-import tinyseg from 'lunr-languages/tinyseg.js';
 import lunrAr from 'lunr-languages/lunr.ar.js';
 import lunrDa from 'lunr-languages/lunr.da.js';
 import lunrDe from 'lunr-languages/lunr.de.js';
@@ -24,11 +18,13 @@ import lunrIt from 'lunr-languages/lunr.it.js';
 import lunrJa from 'lunr-languages/lunr.ja.js';
 import lunrKn from 'lunr-languages/lunr.kn.js';
 import lunrKo from 'lunr-languages/lunr.ko.js';
+import lunrMulti from 'lunr-languages/lunr.multi.js';
 import lunrNl from 'lunr-languages/lunr.nl.js';
 import lunrNo from 'lunr-languages/lunr.no.js';
 import lunrPt from 'lunr-languages/lunr.pt.js';
 import lunrRo from 'lunr-languages/lunr.ro.js';
 import lunrRu from 'lunr-languages/lunr.ru.js';
+import lunrStemmerSupport from 'lunr-languages/lunr.stemmer.support.js';
 import lunrSv from 'lunr-languages/lunr.sv.js';
 import lunrTa from 'lunr-languages/lunr.ta.js';
 import lunrTe from 'lunr-languages/lunr.te.js';
@@ -36,6 +32,10 @@ import lunrTh from 'lunr-languages/lunr.th.js';
 import lunrTr from 'lunr-languages/lunr.tr.js';
 import lunrVi from 'lunr-languages/lunr.vi.js';
 import lunrZh from 'lunr-languages/lunr.zh.js';
+import tinyseg from 'lunr-languages/tinyseg.js';
+import wordcut from 'lunr-languages/wordcut.js';
+import removeMd from 'remove-markdown';
+import {stripHtml} from 'string-strip-html';
 import {createFolders, getSystemLang} from './utils.js';
 
 lunrStemmerSupport(lunr);
@@ -112,7 +112,9 @@ class HugoIndexer {
 		if (extension === '.mdx') {
 			const fileContent = fs.readFileSync(filePath, 'utf8');
 			// Try to extract metadata from export const metadata = { ... }
-			const metadataMatch = fileContent.match(/export\s+const\s+metadata\s*=\s*(\{.*?\});/sv);
+			const metadataMatch = fileContent.match(
+				/export\s+const\s+metadata\s*=\s*(\{.*?\});/sv,
+			);
 			if (metadataMatch) {
 				try {
 					// Evaluate metadata object safely
@@ -140,7 +142,7 @@ class HugoIndexer {
 		} else if (extension === '.html') {
 			plainText = stripHtml(postContent);
 		} else {
-			console.log('Skipped file: ' + filePath);
+			console.log(`Skipped file: ${filePath}`);
 		}
 
 		let tags = [];
@@ -171,8 +173,8 @@ class HugoIndexer {
 	}
 
 	_getPostUrl(filePath, postMeta) {
-		let uri = '/' + filePath.slice(0, Math.max(0, filePath.lastIndexOf('.'))); // Remove extension .md || .html
-		uri = uri.replace(this.baseDir + '/', '');
+		let uri = `/${filePath.slice(0, Math.max(0, filePath.lastIndexOf('.')))}`; // Remove extension .md || .html
+		uri = uri.replace(`${this.baseDir}/`, '');
 
 		let lang = path.extname(uri);
 
@@ -215,7 +217,9 @@ class HugoIndexer {
 	}
 
 	async createIndex() {
-		console.log(`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`);
+		console.log(
+			`Arguments: input: ${this.input}, output: ${this.output}, defaultLanguage: ${this.defaultLanguage}`,
+		);
 
 		createFolders(this.output);
 		this.parseContent(this.input);
@@ -282,9 +286,9 @@ class HugoIndexer {
 }
 
 export {
-	HugoIndexer,
-	DEFAULT_LANGUAGE,
 	CONTENT_PATH,
+	DEFAULT_LANGUAGE,
+	HugoIndexer,
 	OUTPUT_INDEX_FILE,
 	OUTPUT_LUNR_INDEX_FILE,
 };

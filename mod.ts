@@ -1,2 +1,2 @@
-export * from './index.js';
 export * from './bin.js';
+export * from './index.js';

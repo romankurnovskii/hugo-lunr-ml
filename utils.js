@@ -22,4 +22,4 @@ const createFolders = fullPath => {
 	}
 };
 
-export {getSystemLang, createFolders};
+export {createFolders, getSystemLang};
